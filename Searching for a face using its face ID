@@ -1,0 +1,34 @@
+# Searching for a face using its face ID
+
+import boto3
+def search_face_in_collection(face_id,collection_id):
+    threshold = 90
+    max_faces = 2
+    client=boto3.client('rekognition')
+    
+    response=client.search_faces(CollectionId=collection_id,
+                                 FaceId=face_id,
+                                 FaceMatchThreshold=threshold,
+                                 MaxFaces=max_faces)
+    
+    face_matches=response['FaceMatches']
+    print ('--Matching faces--')
+    for match in face_matches:
+        print ('FaceId:' + match['Face']['FaceId'])
+        print ('Similarity: ' + "{:.2f}".format(match['Similarity']) + "%")
+        print
+    return len(face_matches)
+
+def main():
+    
+    face_id='664f9e9d-3afc-43bf-a73d-6f0cb379849d'
+    collection_id='test_collection'
+    
+    faces=[]
+    faces.append(face_id)
+    
+    faces_count=search_face_in_collection(face_id, collection_id)
+    print("faces found: " + str(faces_count))
+
+if __name__ == "__main__":
+    main()
